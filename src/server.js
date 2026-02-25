@@ -10,6 +10,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Trust reverse proxy (Railway, Heroku, Nginx, etc.)
+// Required for express-rate-limit to identify real client IPs
+app.set('trust proxy', 1);
+
 // ── Security Headers (Helmet) ──
 app.use(helmet());
 
