@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CASHIER
+  ACCOUNTANT
+  OWNER
+}
+
+model StoreSettings {
+  id        String   @id @default("default")
+  name      String   @default("My POS Store")
+  address   String   @default("")
+  phone     String   @default("")
+  footer    String   @default("Thank you for your purchase!")
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(CASHIER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+  cart      Cart?
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  price       Float
+  stock       Int         @default(0)
+  imageURL    String?
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Discount {
+  id          String       @id @default(uuid())
+  code        String       @unique
+  type        DiscountType @default(PERCENTAGE)
+  value       Float
+  minPurchase Float?
+  maxUses     Int?
+  usedCount   Int          @default(0)
+  isActive    Boolean      @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  receiptNumber  Int         @unique @default(autoincrement())
+  totalAmount    Float       @default(0)
+  discountCode   String?
+  discountAmount Float       @default(0)
+  status         OrderStatus @default(PENDING)
+  cashierId      String
+  cashier        User        @relation(fields: [cashierId], references: [id])
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float    // Price at the time of purchase
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  cashierId String     @unique
+  cashier   User       @relation(fields: [cashierId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+}

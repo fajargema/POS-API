@@ -1,0 +1,950 @@
+{
+	"info": {
+		"name": "POS API",
+		"description": "Point of Sales REST API — Auth, Products, Categories, Cart, Orders, Reports, Discounts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"auth": { "type": "noauth" },
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newuser@test.com\",\n  \"password\": \"123456\",\n  \"name\": \"New User\",\n  \"role\": \"CASHIER\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login (Owner)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"    console.log('Token saved!');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"auth": { "type": "noauth" },
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"owner@test.com\",\n  \"password\": \"123456\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login (Accountant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"    console.log('Token saved!');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"auth": { "type": "noauth" },
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"accountant@test.com\",\n  \"password\": \"123456\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login (Cashier)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"    console.log('Token saved!');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"auth": { "type": "noauth" },
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"cashier@test.com\",\n  \"password\": \"123456\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Search Categories",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/categories?search=food",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"],
+							"query": [
+								{ "key": "search", "value": "food" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Food\",\n  \"description\": \"All food items\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "categories"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						}
+					}
+				},
+				{
+					"name": "Get Products (Paginated)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/products?page=1&limit=5&sortBy=price&order=asc",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "5" },
+								{ "key": "sortBy", "value": "price" },
+								{ "key": "order", "value": "asc" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Products",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/products?search=nasi",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"],
+							"query": [
+								{ "key": "search", "value": "nasi" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter by Category",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/products?categoryId=CATEGORY_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"],
+							"query": [
+								{ "key": "categoryId", "value": "CATEGORY_ID_HERE" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nasi Goreng\",\n  \"price\": 25000,\n  \"stock\": 50,\n  \"categoryId\": \"CATEGORY_ID_HERE\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						}
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price\": 30000,\n  \"stock\": 100\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products/PRODUCT_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "PRODUCT_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/products/PRODUCT_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "PRODUCT_ID_HERE"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart"]
+						}
+					}
+				},
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"PRODUCT_ID_HERE\",\n  \"quantity\": 2\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart"]
+						}
+					}
+				},
+				{
+					"name": "Update Cart Item",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 5\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/cart/CART_ITEM_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart", "CART_ITEM_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Remove Cart Item",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/cart/CART_ITEM_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart", "CART_ITEM_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Clear Cart",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "cart"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order (Direct)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    { \"productId\": \"PRODUCT_ID_HERE\", \"quantity\": 2 }\n  ],\n  \"discountCode\": \"\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/orders",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Create Order (with Discount)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    { \"productId\": \"PRODUCT_ID_HERE\", \"quantity\": 2 }\n  ],\n  \"discountCode\": \"WELCOME10\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/orders",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Checkout Cart",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/orders/checkout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders", "checkout"]
+						}
+					}
+				},
+				{
+					"name": "Checkout Cart (with Discount)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"discountCode\": \"WELCOME10\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/orders/checkout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders", "checkout"]
+						}
+					}
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/orders",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders"]
+						}
+					}
+				},
+				{
+					"name": "Get Orders (Paginated + Filtered)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/orders?page=1&limit=5&status=PAID&startDate=2026-01-01&endDate=2026-12-31",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "5" },
+								{ "key": "status", "value": "PAID" },
+								{ "key": "startDate", "value": "2026-01-01" },
+								{ "key": "endDate", "value": "2026-12-31" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/orders/ORDER_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "orders", "ORDER_ID_HERE"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Discounts",
+			"item": [
+				{
+					"name": "Create Discount (Owner)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"WELCOME10\",\n  \"type\": \"PERCENTAGE\",\n  \"value\": 10,\n  \"minPurchase\": 50000,\n  \"maxUses\": 100\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts"]
+						}
+					}
+				},
+				{
+					"name": "Create Fixed Discount (Owner)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"FLAT5K\",\n  \"type\": \"FIXED\",\n  \"value\": 5000\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts"]
+						}
+					}
+				},
+				{
+					"name": "Get All Discounts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts"]
+						}
+					}
+				},
+				{
+					"name": "Get Active Discounts Only",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts?active=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts"],
+							"query": [
+								{ "key": "active", "value": "true" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Validate Discount Code",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"WELCOME10\",\n  \"orderTotal\": 100000\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts/validate",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts", "validate"]
+						}
+					}
+				},
+				{
+					"name": "Update Discount (Owner)",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isActive\": false\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts/DISCOUNT_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts", "DISCOUNT_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Delete Discount (Owner)",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/discounts/DISCOUNT_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "discounts", "DISCOUNT_ID_HERE"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Sales Summary",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/sales",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "sales"]
+						}
+					}
+				},
+				{
+					"name": "Sales Summary (Date Range)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/sales?startDate=2026-01-01&endDate=2026-12-31",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "sales"],
+							"query": [
+								{ "key": "startDate", "value": "2026-01-01" },
+								{ "key": "endDate", "value": "2026-12-31" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Sales Summary (CSV Export)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/sales?format=csv",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "sales"],
+							"query": [
+								{ "key": "format", "value": "csv" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Revenue Breakdown (Daily)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/revenue?period=daily",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "revenue"],
+							"query": [
+								{ "key": "period", "value": "daily" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Revenue Breakdown (Weekly)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/revenue?period=weekly",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "revenue"],
+							"query": [
+								{ "key": "period", "value": "weekly" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Revenue Breakdown (Monthly)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/revenue?period=monthly",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "revenue"],
+							"query": [
+								{ "key": "period", "value": "monthly" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Revenue by Category",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/revenue/category",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "revenue", "category"]
+						}
+					}
+				},
+				{
+					"name": "Sales per Cashier",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/cashiers",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "cashiers"]
+						}
+					}
+				},
+				{
+					"name": "Low Stock Alerts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/low-stock?threshold=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "low-stock"],
+							"query": [
+								{ "key": "threshold", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Low Stock Alerts (CSV)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/reports/low-stock?format=csv",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "reports", "low-stock"],
+							"query": [
+								{ "key": "format", "value": "csv" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Test RBAC",
+			"item": [
+				{
+					"name": "Cashier Route",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/test/cashier",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "test", "cashier"]
+						}
+					}
+				},
+				{
+					"name": "Accountant Route",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/test/accountant",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "test", "accountant"]
+						}
+					}
+				},
+				{
+					"name": "Owner Route",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/test/owner",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "test", "owner"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Receipts",
+			"item": [
+				{
+					"name": "Get Receipt (JSON)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/receipts/ORDER_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "receipts", "ORDER_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Download Receipt (PDF)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/receipts/ORDER_ID_HERE/pdf",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "receipts", "ORDER_ID_HERE", "pdf"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Store Settings",
+			"item": [
+				{
+					"name": "Get Store Settings",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "settings"]
+						}
+					}
+				},
+				{
+					"name": "Update Store Settings (Owner)",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My POS Store\",\n  \"address\": \"123 Main Street, Jakarta\",\n  \"phone\": \"+62 812 3456 7890\",\n  \"footer\": \"Thank you for shopping with us!\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "settings"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "me"]
+						}
+					}
+				},
+				{
+					"name": "Update My Profile",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Name\",\n  \"email\": \"newemail@test.com\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "me"]
+						}
+					}
+				},
+				{
+					"name": "Change My Password",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"123456\",\n  \"newPassword\": \"newpass123\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/me/password",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "me", "password"]
+						}
+					}
+				},
+				{
+					"name": "List All Users (Owner)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Search Users (Owner)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users?search=cashier&role=CASHIER&active=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"],
+							"query": [
+								{ "key": "search", "value": "cashier" },
+								{ "key": "role", "value": "CASHIER" },
+								{ "key": "active", "value": "true" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Create User (Owner)",
+					"request": {
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newcashier@test.com\",\n  \"password\": \"123456\",\n  \"name\": \"New Cashier\",\n  \"role\": \"CASHIER\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User by ID (Owner)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users/USER_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "USER_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Update User (Owner)",
+					"request": {
+						"method": "PUT",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Name\",\n  \"role\": \"ACCOUNTANT\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/USER_ID_HERE",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "USER_ID_HERE"]
+						}
+					}
+				},
+				{
+					"name": "Deactivate User (Owner)",
+					"request": {
+						"method": "PATCH",
+						"url": {
+							"raw": "{{baseUrl}}/api/users/USER_ID_HERE/deactivate",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "USER_ID_HERE", "deactivate"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
