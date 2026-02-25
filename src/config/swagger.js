@@ -12,6 +12,10 @@ const options = {
             {
                 url: process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`,
                 description: process.env.APP_URL ? 'Production server' : 'Local development server'
+            },
+            {
+                url: 'https://pos-api-production-5bef.up.railway.app',
+                description: 'Railway production server'
             }
         ],
         components: {
