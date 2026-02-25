@@ -14,7 +14,7 @@ const options = {
                 description: process.env.APP_URL ? 'Production server' : 'Local development server'
             },
             {
-                url: 'https://pos-api-production-5bef.up.railway.app',
+                url: 'https://pos-api-production-e833.up.railway.app',
                 description: 'Railway production server'
             }
         ],
