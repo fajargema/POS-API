@@ -7,8 +7,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy prisma schema and generate client
+# Copy prisma schema and config, generate client
+# Dummy DATABASE_URL needed for prisma.config.ts (generate only needs the schema, not a real DB)
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
 # ── Stage 2: Production ──
@@ -24,8 +27,9 @@ RUN npm ci --omit=dev
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=build /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
-# Copy prisma schema (needed at runtime)
+# Copy prisma schema and config (needed at runtime)
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
 # Copy application source
 COPY src ./src/
